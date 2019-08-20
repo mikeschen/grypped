@@ -7,9 +7,9 @@
           </b-col>
           <b-col>
             <b-input-group prepend="Mountain Project Email" class="mt-3">
-              <b-form-input value="mikemikaels@yahoo.com" v-model="text"></b-form-input>
+              <b-form-input placeholder="mikemikaels@yahoo.com" v-model="text" @keydown.enter="searchName(text)"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-success" @click=searchName(text)>Submit</b-button>
+                <b-button variant="outline-success" @click="searchName(text)">Submit</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -20,6 +20,9 @@
 
 <script>
   export default {
+    props: {
+      method: { type: Function },
+    },
     data() {
       return {
         text: ''
@@ -28,6 +31,7 @@
     methods: {
       searchName(text) {
         console.log('text here ', text)
+        this.$emit('searchName', text)
       }
     }
   }

@@ -1,12 +1,11 @@
 <template>
     <div class="ticks">
-    <Search />
+    <Search @searchName="getTicks" />
       <div class="graph-box">
-        {{ points }}
         <b-container>
           <b-row>
             <b-col>
-        <TrendChart :datasets="datasets" :labels="labels" :min="0" :grid="{
+        <TrendChart :datasets="quantitySets" :labels="quantityLabels" :min="0" :grid="{
      verticalLines: true,
      horizontalLines: true
   }" />
@@ -32,7 +31,7 @@
     },
     data() {
       return {
-        labels: {
+        quantityLabels: {
           xLabels: ["VO", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10"],
           yLabels: 4,
           yLabelsTextFormatter: val => Math.round(val)
@@ -41,14 +40,15 @@
         routes: [],
         sends: {},
         boulders: [],
-        points: [0, 0, 0, 0, 0, 0, 0, 0],
-        datasets:[]
+        points: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        quantitySets:[]
       }
     },
     methods: {
-      getTicks () {
+      getTicks(value) {
+        loadProgressBar();
         axios
-          .get(Constants.ROOT_URL + "mikemikaels@yahoo.com")
+          .get(Constants.ROOT_URL + value, {crossdomain: true})
           .then((res) => {
             res.data.ticks.forEach((tick) => {
               this.routes.push(tick.routeId);
@@ -57,7 +57,7 @@
             const routesUrl = `${Constants.ROUTES_URL}&routeIds=${routeList}`;
             axios.get(routesUrl).then((res) => {
               res.data.routes.forEach((route) => {
-                if (route.type === "Boulder" && parseInt(route.rating[1]) > 3)
+                if (route.type === "Boulder")
                 {
                   this.boulders.push(route.rating[1])
                 }
@@ -67,10 +67,11 @@
                 return obj;
               }, {});
               Object.keys(this.sends).map((key) => {
-                this.points.splice(key, 0, this.sends[key]);
+                // this.points.splice(key, 0, this.sends[key]);
+                this.points[key] = this.sends[key];
               });
-
-              this.datasets = [{
+              console.log('this.pointes 🥩', this.points)
+              this.quantitySets = [{
                 data: this.points,
                 smooth: true,
                 fill: true,
@@ -84,9 +85,8 @@
           });
         }
     },
-    mounted () {
-      loadProgressBar();
-      this.getTicks()
+    mounted() {
+      this.getTicks("mikemikaels@yahoo.com")
     }
   }
 </script>
