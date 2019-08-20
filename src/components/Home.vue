@@ -1,19 +1,20 @@
 <template>
     <div class="ticks">
     <Search />
-    <ul class="home">
-        <li v-for="tick in ticks" :key="tick.tickId">{{ tick }}</li>
-        </ul>
-        <TrendChart :datasets="[    {
-      data: [10, 50, 20, 100, 40, 60, 80],
-      smooth: true,
-      fill: true
-    }]" :labels="labels" :min="0" :grid="{
+      <div class="graph-box">
+        {{ points }}
+        <b-container>
+          <b-row>
+            <b-col>
+        <TrendChart :datasets="datasets" :labels="labels" :min="0" :grid="{
      verticalLines: true,
      horizontalLines: true
   }" />
-      <div class="mt-2">Routes: {{ routes }}</div>
-
+      <div class="mt-2">Hardest Send: V{{ Object.keys(sends).pop() }}</div>
+            </b-col>
+          </b-row>
+        </b-container>
+      </div>
     </div>
 </template>
 
@@ -22,6 +23,7 @@
   import { loadProgressBar } from 'axios-progress-bar'
   import Search from "./Search.vue";
   import TrendChart from "vue-trend-chart";
+  import Constants from '../constants';
 
   export default {
     components: {
@@ -31,48 +33,61 @@
     data() {
       return {
         labels: {
-          xLabels: ["hello", "world", "hot", "damn"],
-          yLabels: 5,
+          xLabels: ["VO", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10"],
+          yLabels: 4,
+          yLabelsTextFormatter: val => Math.round(val)
         },
-        ticks: null,
-        routes: []
+
+        routes: [],
+        sends: {},
+        boulders: [],
+        points: [0, 0, 0, 0, 0, 0, 0, 0],
+        datasets:[]
       }
     },
     methods: {
       getTicks () {
         axios
-          .get('https://www.mountainproject.com/data/get-ticks?email=mikemikaels@yahoo.com&key=106635196-7386eb17c9b59aaa02314e6588deb35d')
+          .get(Constants.ROOT_URL + "mikemikaels@yahoo.com")
           .then((res) => {
             res.data.ticks.forEach((tick) => {
               this.routes.push(tick.routeId);
             });
             const routeList = this.routes.join();
-            const routesUrl = `${ROUTES_URL}&routeIds=${routeList}`
-            return axios.get(routesUrl)
+            const routesUrl = `${Constants.ROUTES_URL}&routeIds=${routeList}`;
+            axios.get(routesUrl).then((res) => {
+              res.data.routes.forEach((route) => {
+                if (route.type === "Boulder" && parseInt(route.rating[1]) > 3)
+                {
+                  this.boulders.push(route.rating[1])
+                }
+              });
+              this.sends = this.boulders.reduce((obj, item) => {
+                obj[item] = (obj[item] || 0) + 1;
+                return obj;
+              }, {});
+              Object.keys(this.sends).map((key) => {
+                this.points.splice(key, 0, this.sends[key]);
+              });
+
+              this.datasets = [{
+                data: this.points,
+                smooth: true,
+                fill: true,
+                className: 'curve'
+              }]
+            })
           })
           .catch((err) => {
             console.log("Error: Could Not Complete Request");
             alert("Could Not Find User.", err);
           });
-      // getRoutes() {
-      //     console.log('routes 🐏!!!', this.routes)
-      //   axios
-      //   .get('https://www.mountainproject.com/data/get-routes?routeIds=106059141,106326084,106617251, 105799647&key=106635196-7386eb17c9b59aaa02314e6588deb35d')
-      //   .then(res => {
-      //     console.log('the routes 🐲 ', res.data)
-      //   })
-      // }
+        }
     },
     mounted () {
       loadProgressBar();
       this.getTicks()
-      this.getRoutes()
     }
-        // .get('https://www.mountainproject.com/data/get-routes?routeIds=105748391,105750454,105749956&key=106635196-7386eb17c9b59aaa02314e6588deb35d')
-        // .then(res => {
-        //   console.log('the routes 🐲 ', res.data)
-
-          // this.dataset.push("hellow")
   }
 </script>
 
@@ -109,28 +124,32 @@
         max-width: 600px;
     }
 
-    .ticks {
-    .vtc {
-        height: 250px;
-        font-size: 12px;
-    @media (min-width: 699px) {
-        height: 350px;
+    .graph-box {
+
     }
+
+    .ticks {
+      .vtc {
+          height: 250px;
+          font-size: 12px;
+      @media (min-width: 699px) {
+          height: 350px;
+      }
     }
     .grid,
     .labels {
-    line {
-        stroke: rgba(#f69119, 0.5);
-    }
+      line {
+          stroke: rgba(#f69119, 0.5);
+      }
     }
     .x-labels {
-    .label {
-    text {
-        display: none;
-    }
-    line {
-        opacity: 0.3;
-    }
+      .label {
+      text {
+          display: none;
+      }
+      line {
+          opacity: 0.3;
+      }
     &:nth-child(6n + 1),
     &:first-child {
     text {
@@ -140,16 +159,6 @@
         opacity: 1;
     }
     }
-    }
-    }
-    .curve-btc {
-    .stroke {
-        stroke: #f69119;
-        stroke-width: 2;
-    }
-    .fill {
-        fill: url(#btcFill);
-        fill-opacity: 0.5;
     }
     }
     }
