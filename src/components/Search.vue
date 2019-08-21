@@ -6,7 +6,7 @@
             <img class="logo" alt="logo" src="../assets/climber.png">
           </b-col>
           <b-col>
-            <b-input-group prepend="Mountain Project Email" class="mt-3">
+            <b-input-group prepend="Mountain Project Email or User ID" class="mt-3">
               <b-form-input placeholder="mikemikaels@yahoo.com" v-model="text" @keydown.enter="searchName(text)"></b-form-input>
               <b-input-group-append>
                 <b-button variant="outline-success" @click="searchName(text)">Submit</b-button>
@@ -30,7 +30,6 @@
     },
     methods: {
       searchName(text) {
-        console.log('text here ', text)
         this.$emit('searchName', text)
       }
     }

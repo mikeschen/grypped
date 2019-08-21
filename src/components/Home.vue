@@ -40,26 +40,34 @@
         routes: [],
         sends: {},
         boulders: [],
-        points: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        points: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         quantitySets:[]
       }
     },
     methods: {
+      userId(value) {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(re.test(String(value).toLowerCase())) {
+          return `email=${value}`
+        } else {
+          return `userId=${value}`
+        }
+      },
       getTicks(value) {
         loadProgressBar();
         axios
-          .get(Constants.ROOT_URL + value, {crossdomain: true})
+          .get(Constants.ROOT_URL + this.userId(value), {crossdomain: true})
           .then((res) => {
             res.data.ticks.forEach((tick) => {
               this.routes.push(tick.routeId);
             });
             const routeList = this.routes.join();
             const routesUrl = `${Constants.ROUTES_URL}&routeIds=${routeList}`;
-            axios.get(routesUrl).then((res) => {
+            axios.get(routesUrl, {crossdomain: true}).then((res) => {
               res.data.routes.forEach((route) => {
                 if (route.type === "Boulder")
                 {
-                  this.boulders.push(route.rating[1])
+                  this.boulders.push(parseInt(route.rating[1] + route.rating[2]))
                 }
               });
               this.sends = this.boulders.reduce((obj, item) => {
@@ -67,15 +75,13 @@
                 return obj;
               }, {});
               Object.keys(this.sends).map((key) => {
-                // this.points.splice(key, 0, this.sends[key]);
                 this.points[key] = this.sends[key];
               });
-              console.log('this.pointes 🥩', this.points)
               this.quantitySets = [{
                 data: this.points,
                 smooth: true,
                 fill: true,
-                className: 'curve'
+                className: 'curve-vue'
               }]
             })
           })
@@ -123,11 +129,6 @@
         padding: 20px;
         max-width: 600px;
     }
-
-    .graph-box {
-
-    }
-
     .ticks {
       .vtc {
           height: 250px;
@@ -161,5 +162,17 @@
     }
     }
     }
+    }
+    .curve-vue {
+      .stroke {
+        stroke: #39af77;
+      }
+      .fill {
+        fill: #39af77;
+      }
+      .point {
+        fill: #39af77;
+        stroke: #39af77;
+      }
     }
 </style>
