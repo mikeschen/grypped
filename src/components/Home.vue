@@ -51,7 +51,7 @@
     data() {
       return {
         quantityLabels: {
-          xLabels: ["VO", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10"],
+          xLabels: ["VO", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10", "V11", "V12"],
           yLabels: 4,
           yLabelsTextFormatter: val => Math.round(val)
         },
@@ -75,7 +75,7 @@
         loadProgressBar();
         const routes = [];
         const boulders = [];
-        const points = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const points = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         axios
           .get(Constants.ROOT_URL + this.userId(value), {crossdomain: true})
           .then((res) => {
@@ -148,6 +148,19 @@
 
     #app {
         padding: 20px 0;
+    }
+
+    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: #B4B4B4 !important;
+      opacity: 1; /* Firefox */
+    }
+
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color: #B4B4B4 !important;
+    }
+
+    ::-ms-input-placeholder { /* Microsoft Edge */
+      color: #B4B4B4 !important;
     }
 
     .ticks {
