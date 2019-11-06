@@ -151,16 +151,16 @@
     }
 
     ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: #B4B4B4 !important;
+      color: #CACACA !important;
       opacity: 1; /* Firefox */
     }
 
     :-ms-input-placeholder { /* Internet Explorer 10-11 */
-      color: #B4B4B4 !important;
+      color: #CACACA !important;
     }
 
     ::-ms-input-placeholder { /* Microsoft Edge */
-      color: #B4B4B4 !important;
+      color: #CACACA !important;
     }
 
     .ticks {
