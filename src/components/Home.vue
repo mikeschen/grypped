@@ -5,6 +5,19 @@
         <b-container>
           <b-row>
             <b-col>
+              <div role="tooltip" ref="tooltip" :class="{'is-active': tooltipData}">
+                <div class="tooltip-container" v-if="tooltipData">
+                  <strong>Ticks: {{tooltipData.data[0]}}</strong>
+                </div>
+              </div>
+              <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="btcFill" x1="1" x2="1" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#39af77"></stop>
+                    <stop offset="100%" stop-color="#ffffff"></stop>
+                  </linearGradient>
+                </defs>
+              </svg>
               <TrendChart
                   :datasets="quantitySets"
                   :labels="quantityLabels"
@@ -13,11 +26,7 @@
                   @mouseMove="onMouseMove" class="tick-chart"
                   :grid="{verticalLines: true, horizontalLines: true}"
               />
-              <div role="tooltip" ref="tooltip" :class="{'is-active': tooltipData}">
-                <div class="tooltip-container" v-if="tooltipData">
-                  <strong>Ticks: {{tooltipData.data[0]}}</strong>
-                </div>
-              </div>
+
       <div class="mt-2">Hardest Send: V{{ Object.keys(sends).pop() }}</div>
             </b-col>
           </b-row>
@@ -129,8 +138,7 @@
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
+<style lang="scss">
     h3 {
         margin: 40px 0 0;
     }
@@ -157,30 +165,25 @@
     }
 
     #app {
-        margin: 0 auto;
         padding: 20px;
-        max-width: 600px;
     }
 
     .ticks {
       .vtc {
           height: 250px;
           font-size: 12px;
-      @media (min-width: 699px) {
+      @media (min-width: 768px) {
           height: 350px;
       }
     }
     .grid,
     .labels {
       line {
-
+        stroke: rgba(#f69119, 0.5);
       }
     }
         .x-labels {
           .label {
-          text {
-              display: none;
-          }
           line {
               opacity: 0.3;
           }
@@ -201,7 +204,8 @@
         stroke: #39af77;
       }
       .fill {
-        fill: #39af77;
+        fill: url(#btcFill);
+        fill-opacity: 0.5;
       }
       .point {
         fill: #39af77;

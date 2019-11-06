@@ -2,7 +2,7 @@
     <div>
       <b-container>
         <b-row>
-          <b-col>
+          <b-col class="col-logo">
             <img class="logo" alt="logo" src="../assets/climber.png">
           </b-col>
           <b-col cols="8">
@@ -47,5 +47,14 @@
   }
   .btn-enter {
     float: left;
+  }
+
+  @media (max-width: 768px) {
+    .col-logo {
+      display: none;
+    }
+    .input-group-append {
+      width: 100%;
+    }
   }
   </style>
