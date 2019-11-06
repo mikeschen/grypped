@@ -12,7 +12,7 @@
               </div>
               <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
                 <defs>
-                  <linearGradient id="btcFill" x1="1" x2="1" y1="0" y2="1">
+                  <linearGradient id="grpFill" x1="1" x2="1" y1="0" y2="1">
                     <stop offset="0%" stop-color="#39af77"></stop>
                     <stop offset="100%" stop-color="#ffffff"></stop>
                   </linearGradient>
@@ -27,7 +27,7 @@
                   :grid="{verticalLines: true, horizontalLines: true}"
               />
 
-      <div class="mt-2">Hardest Send: V{{ Object.keys(sends).pop() }}</div>
+              <div class="mt-2"><strong>Hardest Send: V{{ Object.keys(sends).pop() }}</strong></div>
             </b-col>
           </b-row>
         </b-container>
@@ -102,6 +102,7 @@
                 data: points,
                 smooth: true,
                 fill: true,
+                showPoints: true,
                 className: 'curve-vue'
               }]
             })
@@ -139,33 +140,14 @@
 </script>
 
 <style lang="scss">
-    h3 {
-        margin: 40px 0 0;
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-    li {
-        display: inline-block;
-        margin: 0 10px;
-    }
-    a {
-        color: #42b983;
-    }
-    * {
-        box-sizing: border-box;
-    }
-
     body {
         padding: 0;
         margin: 0;
         font-family: "Source Sans Pro", sans-serif;
-        color: #2f4053;
     }
 
     #app {
-        padding: 20px;
+        padding: 20px 0;
     }
 
     .ticks {
@@ -182,34 +164,39 @@
         stroke: rgba(#f69119, 0.5);
       }
     }
-        .x-labels {
-          .label {
-          line {
-              opacity: 0.3;
+      .x-labels {
+        .label {
+        line {
+            opacity: 0.3;
+        }
+      &:nth-child(6n + 1),
+        &:first-child {
+          text {
+              display: block;
           }
-        &:nth-child(6n + 1),
-          &:first-child {
-            text {
-                display: block;
-            }
-            line {
-                opacity: 1;
-            }
+          line {
+              opacity: 1;
           }
         }
       }
     }
-    .curve-vue {
-      .stroke {
-        stroke: #39af77;
-      }
-      .fill {
-        fill: url(#btcFill);
-        fill-opacity: 0.5;
-      }
-      .point {
-        fill: #39af77;
-        stroke: #39af77;
-      }
+  }
+  .curve-vue {
+    .stroke {
+      stroke: #39af77;
     }
+    .fill {
+      fill: url(#grpFill);
+      fill-opacity: 0.5;
+    }
+    .point {
+      stroke-width: 2;
+      transition: stroke-width 0.2s;
+      fill: #39af77;
+      stroke: #39af77;
+    }
+    .point.is-active {
+      stroke-width: 5;
+    }
+  }
 </style>
