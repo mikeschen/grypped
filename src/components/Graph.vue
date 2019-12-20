@@ -1,12 +1,16 @@
 <template>
   <b-row>
     <b-col>
-      <div role="tooltip" ref="tooltip" :class="{'is-active': tooltipData}">
+      <div role="tooltip" ref="tooltip" :class="{ 'is-active': tooltipData }">
         <div class="tooltip-container" v-if="tooltipData">
-          <strong>Ticks: {{tooltipData.data[0]}}</strong>
+          <strong>Ticks: {{ tooltipData.data[0] }}</strong>
         </div>
       </div>
-      <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+      <svg
+        style="width:0; height:0; position:absolute;"
+        aria-hidden="true"
+        focusable="false"
+      >
         <defs>
           <linearGradient id="grpFill" x1="1" x2="1" y1="0" y2="1">
             <stop offset="0%" stop-color="#39af77" />
@@ -21,15 +25,10 @@
         :interactive="true"
         @mouseMove="onMouseMove"
         class="tick-chart"
-        :grid="{verticalLines: true, horizontalLines: true}"
+        :grid="{ verticalLines: true, horizontalLines: true }"
       />
       <div class="mt-2">
-        <strong>
-          Hardest 📸: V{{ maxBoulder
-          }}
-        </strong>
-        <h1>TEST: {{xlabelsBoulder}}</h1>
-        <h2>Sets: {{quantitySets}}</h2>
+        <strong> Hardest Climb: V{{ maxBoulder }} </strong>
       </div>
     </b-col>
   </b-row>
@@ -45,9 +44,7 @@ export default {
   },
   props: {
     maxBoulder: String,
-    test: Number,
     xlabelsBoulder: Array,
-    points: Array,
     quantitySets: Array
   },
   data() {
@@ -120,24 +117,6 @@ export default {
         }
       }
     }
-  }
-}
-.curve-vue {
-  .stroke {
-    stroke: #39af77;
-  }
-  .fill {
-    fill: url(#grpFill);
-    fill-opacity: 0.5;
-  }
-  .point {
-    stroke-width: 2;
-    transition: stroke-width 0.2s;
-    fill: #39af77;
-    stroke: #39af77;
-  }
-  .point.is-active {
-    stroke-width: 5;
   }
 }
 </style>

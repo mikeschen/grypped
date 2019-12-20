@@ -6,7 +6,16 @@
         <Graph
           v-bind:maxBoulder="this.maxBoulder"
           :xlabelsBoulder="this.xlabelsBoulder"
-          :quantitySets="this.quantitySets"
+          :quantitySets="this.quantityBoulderSets"
+        />
+      </b-container>
+    </div>
+    <div class="graph-box">
+      <b-container>
+        <Graph
+          v-bind:maxBoulder="12"
+          :xlabelsBoulder="this.routeGrades"
+          :quantitySets="this.quantityRouteSets"
         />
       </b-container>
     </div>
@@ -16,6 +25,7 @@
 <script>
 import axios from "axios";
 import { loadProgressBar } from "axios-progress-bar";
+import _ from "lodash";
 import Search from "./Search.vue";
 import Graph from "./Graph.vue";
 import Constants from "../constants";
@@ -42,9 +52,10 @@ export default {
         "V11",
         "V12"
       ],
+      routeGrades: ["5.7", "5.8", "5.9"],
       sends: {},
-      maxBoulder: 0,
-      quantitySets: [],
+      maxBoulder: "0",
+      quantityBoulderSets: [],
       points: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     };
   },
@@ -61,7 +72,7 @@ export default {
       loadProgressBar();
       const routes = [];
       const boulders = [];
-      // const ropes = [];
+      const ropes = [];
       axios
         .get(Constants.ROOT_URL + this.userId(value), { crossdomain: true })
         .then(res => {
@@ -76,12 +87,18 @@ export default {
                 route.type === "Boulder" ||
                 route.type === "Boulder, Alpine"
               ) {
-                console.log("bourlders 🧗🏽‍🔥", route);
-                boulders.push(parseInt(route.rating[1] + route.rating[2]));
+                // console.log("bourlders 🧗🏽‍🔥", route.rating[2]);
+                boulders.push(parseInt(route.rating[1]));
               } else {
-                console.log("routz 🧗🏽‍♂️", route);
+                console.log("routz 🍆", route.rating);
+                ropes.push(route.rating);
               }
             });
+            const counts = {};
+            ropes.forEach(x => {
+              counts[x] = (counts[x] || 0) + 1;
+            });
+            console.log("512z 🧀", ropes.sort());
             this.sends = boulders.reduce((obj, item) => {
               obj[item] = (obj[item] || 0) + 1;
               return obj;
@@ -90,13 +107,22 @@ export default {
               this.points[key] = this.sends[key];
             });
 
-            this.quantitySets = [
+            this.quantityBoulderSets = [
               {
                 data: this.points,
                 smooth: true,
                 fill: true,
                 showPoints: true,
-                className: "curve-vue"
+                className: "curve-boulder"
+              }
+            ];
+            this.quantityRouteSets = [
+              {
+                data: [0, 2, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 10],
+                smooth: true,
+                fill: true,
+                showPoints: true,
+                className: "curve-route"
               }
             ];
             this.maxBoulder = Object.keys(this.sends).pop();
@@ -139,5 +165,42 @@ body {
 ::-ms-input-placeholder {
   /* Microsoft Edge */
   color: #cacaca !important;
+}
+
+.curve-boulder {
+  .stroke {
+    stroke: #39af77;
+  }
+  .fill {
+    fill: url(#grpFill);
+    fill-opacity: 0.5;
+  }
+  .point {
+    stroke-width: 2;
+    transition: stroke-width 0.2s;
+    fill: #39af77;
+    stroke: #39af77;
+  }
+  .point.is-active {
+    stroke-width: 5;
+  }
+}
+.curve-route {
+  .stroke {
+    stroke: red;
+  }
+  .fill {
+    fill: url(#grpFill);
+    fill-opacity: 0.5;
+  }
+  .point {
+    stroke-width: 2;
+    transition: stroke-width 0.2s;
+    fill: red;
+    stroke: red;
+  }
+  .point.is-active {
+    stroke-width: 5;
+  }
 }
 </style>
