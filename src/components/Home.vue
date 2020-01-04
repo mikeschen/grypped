@@ -6,18 +6,12 @@
         <Graph
           v-bind:maxBoulder="this.maxBoulder"
           :xlabelsBoulder="this.xlabelsBoulder"
-          :quantitySets="this.quantityBoulderSets"
+          :quantitySets="this.quantityRouteSets"
         />
       </b-container>
     </div>
     <div class="graph-box">
-      <b-container>
-        <Graph
-          v-bind:maxBoulder="12"
-          :xlabelsBoulder="this.routeGrades"
-          :quantitySets="this.quantityRouteSets"
-        />
-      </b-container>
+      <b-container> </b-container>
     </div>
   </div>
 </template>
@@ -52,11 +46,11 @@ export default {
         "V11",
         "V12"
       ],
-      routeGrades: ["5.7", "5.8", "5.9"],
       sends: {},
       maxBoulder: "0",
       quantityBoulderSets: [],
-      points: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      points: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      yds: ["5.11a", "5.11b", "5.11c", "5.12a", "5.14a"]
     };
   },
   methods: {
@@ -91,14 +85,16 @@ export default {
                 boulders.push(parseInt(route.rating[1]));
               } else {
                 console.log("routz 🍆", route.rating);
+                //remove string at space
                 ropes.push(route.rating);
               }
             });
+            ropes.sort();
             const counts = {};
-            ropes.forEach(x => {
-              counts[x] = (counts[x] || 0) + 1;
+            ropes.forEach(y => {
+              counts[y] = counts[y] + 1 || 1;
             });
-            console.log("512z 🧀", ropes.sort());
+            console.log("countsObject 🧀", counts);
             this.sends = boulders.reduce((obj, item) => {
               obj[item] = (obj[item] || 0) + 1;
               return obj;
