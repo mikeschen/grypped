@@ -3,73 +3,18 @@
     <Search @searchName="getTicks" />
     <div class="graph-box">
       <b-container>
-        <b-row>
-          <b-col>
-            <div role="tooltip" ref="tooltip1" :class="{ 'is-active': tooltipData }">
-              <div class="tooltip-container" v-if="tooltipData">
-                <strong>Ticks: {{ tooltipData.data[0] }}</strong>
-              </div>
-            </div>
-            <svg
-              style="width:0; height:0; position:absolute;"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <defs>
-                <linearGradient id="grpFill1" x1="1" x2="1" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#39af77" />
-                  <stop offset="100%" stop-color="#ffffff" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <TrendChart
-              :datasets="quantityBoulderSets"
-              :labels="quantityBoulderLabels"
-              :min="0"
-              :interactive="true"
-              @mouseMove="onMouseMove"
-              class="tick-chart"
-              :grid="{ verticalLines: true, horizontalLines: true }"
-            />
-
-            <div class="mt-2">
-              <strong>Hardest Boulder: {{ grades[convertBoulders[convertBoulders.length - 1]] }}</strong>
-            </div>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col>
-            <div role="tooltip" ref="tooltip2" :class="{ 'is-active': tooltipData }">
-              <div class="tooltip-container" v-if="tooltipData">
-                <strong>Ticks: {{ tooltipData.data[0] }}</strong>
-              </div>
-            </div>
-            <svg
-              style="width:0; height:0; position:absolute;"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <defs>
-                <linearGradient id="grpFill2" x1="1" x2="1" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#d8002b" />
-                  <stop offset="100%" stop-color="#ffffff" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <TrendChart
-              :datasets="quantityRopeSets"
-              :labels="quantityRopeLabels"
-              :min="0"
-              :interactive="true"
-              @mouseMove="onMouseMove"
-              class="tick-chart"
-              :grid="{ verticalLines: true, horizontalLines: true }"
-            />
-            <div class="mt-2">
-              <strong>Hardest Route: {{ grades[convertRopes[convertRopes.length - 1]] }}</strong>
-            </div>
-          </b-col>
-        </b-row>
+        <Graph
+          v-bind:converts="this.convertBoulders"
+          :quantityLabels="this.quantityBoulderLabels"
+          :quantitySets="this.quantityBoulderSets"
+        />
+      </b-container>
+      <b-container>
+        <Graph
+          v-bind:converts="this.convertRopes"
+          :quantityLabels="this.quantityRopeLabels"
+          :quantitySets="this.quantityRopeSets"
+        />
       </b-container>
     </div>
   </div>
@@ -79,34 +24,30 @@
 import axios from "axios";
 import { loadProgressBar } from "axios-progress-bar";
 import Search from "./Search.vue";
-import TrendChart from "vue-trend-chart";
+import Graph from "./Graph.vue";
 import Constants from "../constants";
-import Popper from "popper.js";
 
 export default {
   components: {
     Search,
-    TrendChart
+    Graph
   },
   data() {
     return {
       quantityBoulderLabels: {
         xLabels: ["loading...", "loading..."],
-        yLabels: 4,
+        yLabels: 5,
         yLabelsTextFormatter: val => Math.round(val)
       },
       quantityBoulderSets: [],
       quantityRopeLabels: {
         xLabels: ["loading...", "loading..."],
-        yLabels: 4,
+        yLabels: 5,
         yLabelsTextFormatter: val => Math.round(val)
       },
       quantityRopeSets: [],
       boulderCounts: {},
       ropeCounts: {},
-      tooltipData: null,
-      popper: null,
-      popperIsActive: false,
       grades: Constants.GRADES,
       convertBoulders: [],
       convertRopes: []
@@ -185,35 +126,6 @@ export default {
           console.log("Error: Could Not Complete Request");
           alert("Could Not Find User.", err);
         });
-    },
-    initPopper() {
-      const chart = document.querySelector(".tick-chart");
-      const ref = chart.querySelector(".active-line");
-      const tooltip1 = this.$refs.tooltip1;
-      this.popper = new Popper(ref, tooltip1, {
-        placement: "right",
-        modifiers: {
-          offset: { offset: "0,0" },
-          preventOverflow: {
-            boundariesElement: chart
-          }
-        }
-      });
-      const tooltip2 = this.$refs.tooltip2;
-      this.popper = new Popper(ref, tooltip2, {
-        placement: "right",
-        modifiers: {
-          offset: { offset: ",0" },
-          preventOverflow: {
-            boundariesElement: chart
-          }
-        }
-      });
-    },
-    onMouseMove(params) {
-      this.popperIsActive = !!params;
-      this.popper.scheduleUpdate();
-      this.tooltipData = params || null;
     }
   },
   mounted() {
@@ -249,47 +161,12 @@ body {
   color: #cacaca !important;
 }
 
-.col {
-  width: 120% !important;
-}
-
-.ticks {
-  .vtc {
-    height: 250px;
-    font-size: 12px;
-    @media (min-width: 768px) {
-      height: 350px;
-    }
-  }
-  .grid,
-  .labels {
-    line {
-      stroke: rgba(#f69119, 0.5);
-    }
-  }
-  .x-labels {
-    .label {
-      line {
-        opacity: 0.3;
-      }
-      &:nth-child(6n + 1),
-      &:first-child {
-        text {
-          display: block;
-        }
-        line {
-          opacity: 1;
-        }
-      }
-    }
-  }
-}
 .curve-vue-green {
   .stroke {
     stroke: #39af77;
   }
   .fill {
-    fill: url(#grpFill1);
+    fill: url(#grpFill);
     fill-opacity: 0.5;
   }
   .point {
@@ -302,12 +179,13 @@ body {
     stroke-width: 5;
   }
 }
+
 .curve-vue-red {
   .stroke {
     stroke: #d8002b;
   }
   .fill {
-    fill: url(#grpFill2);
+    fill: url(#grpFill);
     fill-opacity: 0.5;
   }
   .point {
