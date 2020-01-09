@@ -1,16 +1,15 @@
 <template>
   <b-row>
     <b-col>
+      <div class="mt-2">
+        <strong>Hardest Grade: {{ grades[converts[converts.length - 1]] }}</strong>
+      </div>
       <div role="tooltip" ref="tooltip" :class="{ 'is-active': tooltipData }">
         <div class="tooltip-container" v-if="tooltipData">
-          <strong>Ticks: {{ tooltipData.data[0] }}</strong>
+          <strong class="header">Ticks: {{ tooltipData.data[0] }}</strong>
         </div>
       </div>
-      <svg
-        style="width:0; height:0; position:absolute;"
-        aria-hidden="true"
-        focusable="false"
-      >
+      <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
         <defs>
           <linearGradient id="grpFill" x1="1" x2="1" y1="0" y2="1">
             <stop offset="0%" stop-color="#39af77" />
@@ -27,11 +26,6 @@
         class="tick-chart"
         :grid="{ verticalLines: true, horizontalLines: true }"
       />
-      <div class="mt-2">
-        <strong
-          >Hardest Grade: {{ grades[converts[converts.length - 1]] }}</strong
-        >
-      </div>
     </b-col>
   </b-row>
 </template>
@@ -86,6 +80,9 @@ export default {
 </script>
 
 <style lang="scss">
+.header {
+  color: #000000;
+}
 .ticks {
   .vtc {
     height: 250px;

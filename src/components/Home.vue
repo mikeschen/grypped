@@ -39,15 +39,13 @@ export default {
         yLabels: 5,
         yLabelsTextFormatter: val => Math.round(val)
       },
-      quantityBoulderSets: [],
       quantityRopeLabels: {
         xLabels: ["loading...", "loading..."],
         yLabels: 5,
         yLabelsTextFormatter: val => Math.round(val)
       },
+      quantityBoulderSets: [],
       quantityRopeSets: [],
-      boulderCounts: {},
-      ropeCounts: {},
       grades: Constants.GRADES,
       convertBoulders: [],
       convertRopes: []
@@ -61,6 +59,22 @@ export default {
       } else {
         return `userId=${value}`;
       }
+    },
+    filteredLabels(labels) {
+      let numberOfLabels = 2;
+      if (labels.length > 20) {
+        numberOfLabels = 4;
+      }
+      return labels.map((grade, i) => {
+        return i % numberOfLabels === 0 ? this.grades[grade] : " ";
+      });
+    },
+    buildGraph(routes) {
+      const counts = {};
+      routes.forEach(x => {
+        counts[x] = counts[x] + 1 || 1;
+      });
+      return counts;
     },
     getTicks(value) {
       loadProgressBar();
@@ -77,49 +91,48 @@ export default {
           const routesUrl = `${Constants.ROUTES_URL}&routeIds=${routeList}`;
           axios.get(routesUrl, { crossdomain: true }).then(res => {
             res.data.routes.forEach(route => {
-              if (
-                route.type === "Boulder" ||
-                route.type === "Boulder, Alpine"
-              ) {
-                boulders.push(this.grades.indexOf(route.rating.split(" ")[0]));
-              } else {
-                ropes.push(this.grades.indexOf(route.rating.split(" ")[0]));
+              const ratingIndex = this.grades.indexOf(
+                route.rating.split(" ")[0]
+              );
+              if (ratingIndex !== 0 && ratingIndex !== 66) {
+                if (
+                  route.type === "Boulder" ||
+                  route.type === "Boulder, Alpine"
+                ) {
+                  boulders.push(ratingIndex);
+                } else {
+                  ropes.push(ratingIndex);
+                }
               }
             });
-            boulders.forEach(x => {
-              this.boulderCounts[x] = this.boulderCounts[x] + 1 || 1;
-            });
-            ropes.forEach(y => {
-              this.ropeCounts[y] = this.ropeCounts[y] + 1 || 1;
-            });
-            this.quantityRopeSets = [
-              {
-                data: Object.values(this.ropeCounts),
-                smooth: true,
-                fill: true,
-                showPoints: true,
-                className: "curve-vue-green"
-              }
-            ];
-            this.convertRopes = Object.keys(this.ropeCounts);
-            this.quantityRopeLabels.xLabels = this.convertRopes.map(grade => {
-              return this.grades[grade];
-            });
+            const boulderCounts = this.buildGraph(boulders);
+            this.convertBoulders = Object.keys(boulderCounts);
+            this.quantityBoulderLabels.xLabels = this.filteredLabels(
+              this.convertBoulders
+            );
             this.quantityBoulderSets = [
               {
-                data: Object.values(this.boulderCounts),
+                data: Object.values(boulderCounts),
                 smooth: true,
                 fill: true,
                 showPoints: true,
                 className: "curve-vue-red"
               }
             ];
-            this.convertBoulders = Object.keys(this.boulderCounts);
-            this.quantityBoulderLabels.xLabels = this.convertBoulders.map(
-              grade => {
-                return this.grades[grade];
-              }
+            const ropeCounts = this.buildGraph(ropes);
+            this.convertRopes = Object.keys(ropeCounts);
+            this.quantityRopeLabels.xLabels = this.filteredLabels(
+              this.convertRopes
             );
+            this.quantityRopeSets = [
+              {
+                data: Object.values(ropeCounts),
+                smooth: true,
+                fill: true,
+                showPoints: true,
+                className: "curve-vue-green"
+              }
+            ];
           });
         })
         .catch(err => {
@@ -129,7 +142,7 @@ export default {
     }
   },
   mounted() {
-    this.getTicks("mikemikaels@yahoo.com"), this.initPopper();
+    this.getTicks("mikemikaels@yahoo.com");
   }
 };
 </script>
