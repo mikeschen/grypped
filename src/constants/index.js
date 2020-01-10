@@ -1,7 +1,7 @@
 const ROOT_URL =
-  "https://www.mountainproject.com/data/get-ticks?key=106635196-7386eb17c9b59aaa02314e6588deb35d&";
+  "https://www.mountainproject.com/data/get-ticks?key=YOUR KEY GOES HERE";
 const ROUTES_URL =
-  "https://www.mountainproject.com/data/get-routes?key=106635196-7386eb17c9b59aaa02314e6588deb35d";
+  "https://www.mountainproject.com/data/get-routes?key=YOUR KEY GOES HERE";
 
 const GRADES = [
   "Easy",
