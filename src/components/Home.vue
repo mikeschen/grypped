@@ -1,19 +1,22 @@
 <template>
   <div class="ticks">
     <Search @searchName="getTicks" />
+    <b-container>
+      <b-row>
+        <b-col class="col-logo">
+          <button
+            class="btn btn-primary btn-main"
+            @click="toggleRoutes()"
+          >{{this.isRoutes ? "Routes" : "Boulders"}}</button>
+        </b-col>
+      </b-row>
+    </b-container>
     <div class="graph-box">
       <b-container>
         <Graph
-          v-bind:converts="this.convertBoulders"
-          :quantityLabels="this.quantityBoulderLabels"
-          :quantitySets="this.quantityBoulderSets"
-        />
-      </b-container>
-      <b-container>
-        <Graph
-          v-bind:converts="this.convertRopes"
-          :quantityLabels="this.quantityRopeLabels"
-          :quantitySets="this.quantityRopeSets"
+          v-bind:converts="this.isRoutes ? this.convertRopes : this.convertBoulders"
+          :quantityLabels="this.isRoutes ? this.quantityRopeLabels : this.quantityBoulderLabels"
+          :quantitySets="this.isRoutes ? this.quantityRopeSets : this.quantityBoulderSets"
         />
       </b-container>
     </div>
@@ -48,10 +51,13 @@ export default {
       quantityRopeSets: [],
       grades: Constants.GRADES,
       convertBoulders: [],
-      convertRopes: []
+      isRoutes: true
     };
   },
   methods: {
+    toggleRoutes() {
+      this.isRoutes = !this.isRoutes;
+    },
     userId(value) {
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (re.test(String(value).toLowerCase())) {
@@ -77,6 +83,7 @@ export default {
       return counts;
     },
     getTicks(value) {
+      //Test User ID: 106662570
       loadProgressBar();
       const routes = [];
       const boulders = [];
@@ -95,13 +102,11 @@ export default {
                 route.rating.split(" ")[0]
               );
               if (ratingIndex !== 0 && ratingIndex !== 66) {
-                if (
-                  route.type === "Boulder" ||
-                  route.type === "Boulder, Alpine"
-                ) {
+                if (route.type.includes("Boulder")) {
                   boulders.push(ratingIndex);
                 } else {
                   ropes.push(ratingIndex);
+                  console.log("all routes ✍️", route);
                 }
               }
             });
@@ -156,6 +161,10 @@ body {
 
 #app {
   padding: 20px 0;
+}
+
+.btn-main {
+  margin: 10px 0;
 }
 
 ::placeholder {

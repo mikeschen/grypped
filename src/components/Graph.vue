@@ -21,7 +21,7 @@
         :datasets="quantitySets"
         :labels="quantityLabels"
         :min="0"
-        :interactive="true"
+        :interactive="false"
         @mouseMove="onMouseMove"
         class="tick-chart"
         :grid="{ verticalLines: true, horizontalLines: true }"
