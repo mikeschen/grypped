@@ -16,6 +16,7 @@
     "sass-loader": "^7.2.0",
     "style-loader": "^1.0.0",
     "vue": "^2.6.10",
+    "vue-material": "^1.0.0-beta-11",
     "vue-trend-chart": "^0.14.4"
   },
   "devDependencies": {

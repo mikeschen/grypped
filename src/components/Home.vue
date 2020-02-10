@@ -3,20 +3,17 @@
     <Search @searchName="getTicks" />
     <b-container>
       <b-row>
-        <b-col class="col-logo">
-          <button
-            class="btn btn-primary btn-main"
-            @click="toggleRoutes()"
-          >{{this.isRoutes ? "Routes" : "Boulders"}}</button>
+        <b-col>
+          <md-switch v-model="isRoutes">{{ isRoutes ? "Routes" : "Boulders "}}</md-switch>
         </b-col>
       </b-row>
     </b-container>
     <div class="graph-box">
       <b-container>
         <Graph
-          v-bind:converts="this.isRoutes ? this.convertRopes : this.convertBoulders"
-          :quantityLabels="this.isRoutes ? this.quantityRopeLabels : this.quantityBoulderLabels"
-          :quantitySets="this.isRoutes ? this.quantityRopeSets : this.quantityBoulderSets"
+          v-bind:converts="isRoutes ? convertRopes : convertBoulders"
+          :quantityLabels="isRoutes ? quantityRopeLabels : quantityBoulderLabels"
+          :quantitySets="isRoutes ? quantityRopeSets : quantityBoulderSets"
         />
       </b-container>
     </div>
@@ -51,13 +48,11 @@ export default {
       quantityRopeSets: [],
       grades: Constants.GRADES,
       convertBoulders: [],
+      convertRopes: [],
       isRoutes: true
     };
   },
   methods: {
-    toggleRoutes() {
-      this.isRoutes = !this.isRoutes;
-    },
     userId(value) {
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (re.test(String(value).toLowerCase())) {
@@ -106,7 +101,6 @@ export default {
                   boulders.push(ratingIndex);
                 } else {
                   ropes.push(ratingIndex);
-                  console.log("all routes ✍️", route);
                 }
               }
             });
@@ -121,7 +115,7 @@ export default {
                 smooth: true,
                 fill: true,
                 showPoints: true,
-                className: "curve-vue-red"
+                className: "curve-vue-green"
               }
             ];
             const ropeCounts = this.buildGraph(ropes);
@@ -135,7 +129,7 @@ export default {
                 smooth: true,
                 fill: true,
                 showPoints: true,
-                className: "curve-vue-green"
+                className: "curve-vue-red"
               }
             ];
           });

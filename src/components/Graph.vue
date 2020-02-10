@@ -21,7 +21,7 @@
         :datasets="quantitySets"
         :labels="quantityLabels"
         :min="0"
-        :interactive="false"
+        :interactive="true"
         @mouseMove="onMouseMove"
         class="tick-chart"
         :grid="{ verticalLines: true, horizontalLines: true }"
@@ -58,9 +58,9 @@ export default {
       const ref = chart.querySelector(".active-line");
       const tooltip = this.$refs.tooltip;
       this.popper = new Popper(ref, tooltip, {
-        placement: "right",
+        placement: "bottom",
         modifiers: {
-          offset: { offset: "0,10" },
+          offset: { offset: "0,60" },
           preventOverflow: {
             boundariesElement: chart
           }
@@ -69,7 +69,7 @@ export default {
     },
     onMouseMove(params) {
       this.popperIsActive = !!params;
-      this.popper.scheduleUpdate();
+      // this.popper.scheduleUpdate();
       this.tooltipData = params || null;
     }
   },
