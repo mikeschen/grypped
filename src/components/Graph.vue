@@ -2,14 +2,28 @@
   <b-row>
     <b-col>
       <div class="mt-2">
-        <strong>Hardest Grade: {{ grades[converts[converts.length - 1]] }}</strong>
+        <strong
+          >Hardest Grade: {{ grades[converts[converts.length - 1]] }}</strong
+        >
       </div>
       <div role="tooltip" ref="tooltip" :class="{ 'is-active': tooltipData }">
         <div class="tooltip-container" v-if="tooltipData">
-          <strong class="header">Ticks: {{ tooltipData.data[0] }}</strong>
+          <div>
+            <strong class="header"
+              >Grade:
+              {{ tooltipData && grades[converts[tooltipData.index]] }}</strong
+            >
+          </div>
+          <div>
+            <strong class="header">Ticks: {{ tooltipData.data[0] }}</strong>
+          </div>
         </div>
       </div>
-      <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+      <svg
+        style="width:0; height:0; position:absolute;"
+        aria-hidden="true"
+        focusable="false"
+      >
         <defs>
           <linearGradient id="grpFill" x1="1" x2="1" y1="0" y2="1">
             <stop offset="0%" stop-color="#39af77" />
