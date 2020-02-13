@@ -2,24 +2,27 @@
   <div>
     <b-container>
       <b-row>
-        <b-col class="col-logo">
+        <div class="col-logo">
           <img class="logo" alt="logo" src="../assets/climber.png" />
-        </b-col>
-        <b-col cols="8">
-          <b-input-group prepend="Mountain Project Email or User ID" class="mt-3">
-            <b-form-input
-              type="email"
-              id="userInputEmail"
-              aria-describedby="emailHelp"
-              placeholder="name@email.com"
-              name="userName"
-              v-model="text"
-              @keydown.enter="searchName(text)"
-            ></b-form-input>
-            <b-input-group-append>
-              <b-button variant="outline-success" @click="searchName(text)">Submit</b-button>
-            </b-input-group-append>
-          </b-input-group>
+        </div>
+        <b-col>
+          <div class="md-layout">
+            <div class="md-title">Mountain Project Email or User ID</div>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item">
+                <md-field>
+                  <label for="email">name@email.com</label>
+                  <md-input
+                    name="email"
+                    id="email"
+                    v-model="text"
+                    @keydown.enter="searchName(text)"
+                  />
+                </md-field>
+              </div>
+              <md-button class="md-accent md-raised btn-center" @click="searchName(text)">search</md-button>
+            </div>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -52,8 +55,8 @@ export default {
   display: inline-block;
   width: 80%;
 }
-.btn-enter {
-  float: left;
+.btn-center {
+  margin-top: 15px;
 }
 
 @media (max-width: 768px) {
