@@ -19,8 +19,15 @@
                     @keydown.enter="searchName(text)"
                   />
                 </md-field>
+                <div class="errors-red" v-if="errors.length">
+                  <p>{{ errors[0] }}</p>
+                </div>
               </div>
-              <md-button class="md-accent md-raised btn-center" @click="searchName(text)">search</md-button>
+              <md-button
+                class="md-accent md-raised btn-center"
+                @click="searchName(text)"
+                >search</md-button
+              >
             </div>
           </div>
         </b-col>
@@ -32,7 +39,8 @@
 <script>
 export default {
   props: {
-    method: { type: Function }
+    method: { type: Function },
+    errors: Array
   },
   data() {
     return {
@@ -57,6 +65,11 @@ export default {
 }
 .btn-center {
   margin-top: 15px;
+}
+.errors-red {
+  display: inline-block;
+  color: #d8002b;
+  margin-right: 20px;
 }
 
 @media (max-width: 768px) {

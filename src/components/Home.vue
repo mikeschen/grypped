@@ -1,10 +1,11 @@
 <template>
   <div class="ticks">
-    <Search @searchName="getTicks" />
+    <Search v-bind:errors="errors" @searchName="getTicks" />
     <b-container>
       <b-row>
         <b-col>
-          <md-switch v-model="isRoutes">{{ isRoutes ? "Routes" : "Boulders "}}</md-switch>
+          <md-radio v-model="isRoutes" :value="true">Routes</md-radio>
+          <md-radio v-model="isRoutes" :value="false">Boulders</md-radio>
         </b-col>
       </b-row>
     </b-container>
@@ -12,7 +13,9 @@
       <b-container>
         <Graph
           v-bind:converts="isRoutes ? convertRopes : convertBoulders"
-          :quantityLabels="isRoutes ? quantityRopeLabels : quantityBoulderLabels"
+          :quantityLabels="
+            isRoutes ? quantityRopeLabels : quantityBoulderLabels
+          "
           :quantitySets="isRoutes ? quantityRopeSets : quantityBoulderSets"
         />
       </b-container>
@@ -44,11 +47,12 @@ export default {
         yLabels: 5,
         yLabelsTextFormatter: val => Math.round(val)
       },
+      grades: Constants.GRADES,
       quantityBoulderSets: [],
       quantityRopeSets: [],
-      grades: Constants.GRADES,
       convertBoulders: [],
       convertRopes: [],
+      errors: [],
       isRoutes: true
     };
   },
@@ -79,6 +83,7 @@ export default {
     },
     getTicks(value) {
       //Test User ID: 106662570
+      this.errors = [];
       loadProgressBar();
       const routes = [];
       const boulders = [];
@@ -136,7 +141,8 @@ export default {
         })
         .catch(err => {
           console.log("Error: Could Not Complete Request");
-          alert("Could Not Find User.", err);
+          this.errors = [];
+          this.errors.push("Could Not Find User.");
         });
     }
   },
