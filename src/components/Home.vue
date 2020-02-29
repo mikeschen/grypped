@@ -57,12 +57,15 @@ export default {
     };
   },
   methods: {
-    userId(value) {
-      const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (re.test(String(value).toLowerCase())) {
+    checkUser(value) {
+      const email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const id = /^\d+$/.test(value);
+      if (email.test(String(value).toLowerCase())) {
         return `email=${value}`;
-      } else {
+      } else if (id) {
         return `userId=${value}`;
+      } else {
+        return false;
       }
     },
     filteredLabels(labels) {
@@ -88,8 +91,13 @@ export default {
       const routes = [];
       const boulders = [];
       const ropes = [];
+      const userId = this.checkUser(value);
+      if (!userId) {
+        this.errors.push("Please Enter a Valid Email or Id.");
+        return;
+      }
       axios
-        .get(Constants.ROOT_URL + this.userId(value), { crossdomain: true })
+        .get(Constants.ROOT_URL + userId, { crossdomain: true })
         .then(res => {
           res.data.ticks.forEach(tick => {
             routes.push(tick.routeId);
