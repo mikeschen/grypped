@@ -3,9 +3,16 @@
     <Search v-bind:errors="errors" @searchName="getTicks" />
     <b-container>
       <b-row>
-        <b-col>
+        <b-col md="4">
           <md-radio v-model="isRoutes" :value="true">Routes</md-radio>
           <md-radio v-model="isRoutes" :value="false">Boulders</md-radio>
+        </b-col>
+        <b-col md="8">
+          <img
+            class="user-icon"
+            src="https://images.unsplash.com/photo-1500879747858-bb1845b61beb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+          />
+          <h5 class="user-name">Michael Schennum</h5>
         </b-col>
       </b-row>
     </b-container>
@@ -184,6 +191,16 @@ body {
 :-ms-input-placeholder {
   /* Internet Explorer 10-11 */
   color: #cacaca !important;
+}
+
+.user-icon {
+  max-width: 60px;
+  border-radius: 50%;
+}
+
+.user-name {
+  padding-left: 20px;
+  display: inline;
 }
 
 ::-ms-input-placeholder {
