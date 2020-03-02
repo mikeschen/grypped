@@ -3,7 +3,7 @@
     <b-container>
       <b-row>
         <div class="col-logo">
-          <img class="logo" alt="logo" src="../assets/climber.png" />
+          <img class="logo" alt="gripped" src="../assets/climber.png" />
         </div>
         <b-col>
           <div class="md-layout">
@@ -23,11 +23,7 @@
                   <p>{{ errors[0] }}</p>
                 </div>
               </div>
-              <md-button
-                class="md-accent md-raised btn-center"
-                @click="searchName(text)"
-                >search</md-button
-              >
+              <md-button class="md-accent md-raised btn-center" @click="searchName(text)">search</md-button>
             </div>
           </div>
         </b-col>
@@ -57,11 +53,14 @@ export default {
 
 <style lang="scss" scoped>
 .logo {
-  width: 120px;
+  width: 100px;
 }
 .input-email {
   display: inline-block;
   width: 80%;
+}
+.md-title {
+  margin-right: 20px;
 }
 .btn-center {
   margin-top: 15px;

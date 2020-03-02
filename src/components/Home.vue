@@ -1,32 +1,22 @@
 <template>
   <div class="ticks">
-    <Search v-bind:errors="errors" @searchName="getTicks" />
+    <Search v-bind:errors="errors" @searchName="getUser" />
     <b-container>
       <b-row>
         <b-col md="4">
           <md-radio v-model="isRoutes" :value="true">Routes</md-radio>
           <md-radio v-model="isRoutes" :value="false">Boulders</md-radio>
         </b-col>
-        <b-col md="8">
-          <img
-            class="user-icon"
-            src="https://images.unsplash.com/photo-1500879747858-bb1845b61beb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-          />
-          <h5 class="user-name">Michael Schennum</h5>
-        </b-col>
+        <User v-bind:avatar="userInfo.avatar">{{ userInfo.name }}</User>
       </b-row>
     </b-container>
-    <div class="graph-box">
-      <b-container>
-        <Graph
-          v-bind:converts="isRoutes ? convertRopes : convertBoulders"
-          :quantityLabels="
+    <Graph
+      v-bind:converts="isRoutes ? convertRopes : convertBoulders"
+      :quantityLabels="
             isRoutes ? quantityRopeLabels : quantityBoulderLabels
           "
-          :quantitySets="isRoutes ? quantityRopeSets : quantityBoulderSets"
-        />
-      </b-container>
-    </div>
+      :quantitySets="isRoutes ? quantityRopeSets : quantityBoulderSets"
+    />
   </div>
 </template>
 
@@ -34,12 +24,14 @@
 import axios from "axios";
 import { loadProgressBar } from "axios-progress-bar";
 import Search from "./Search.vue";
+import User from "./User.vue";
 import Graph from "./Graph.vue";
 import Constants from "../constants";
 
 export default {
   components: {
     Search,
+    User,
     Graph
   },
   data() {
@@ -55,6 +47,11 @@ export default {
         yLabelsTextFormatter: val => Math.round(val)
       },
       grades: Constants.GRADES,
+      userInfo: {
+        name: "Joe Smith",
+        avatar:
+          "https://www.mountainproject.com/photos/avatars/106635196.jpg?1522108024"
+      },
       quantityBoulderSets: [],
       quantityRopeSets: [],
       convertBoulders: [],
@@ -65,6 +62,7 @@ export default {
   },
   methods: {
     checkUser(value) {
+      this.errors = [];
       const email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       const id = /^\d+$/.test(value);
       if (email.test(String(value).toLowerCase())) {
@@ -72,7 +70,7 @@ export default {
       } else if (id) {
         return `userId=${value}`;
       } else {
-        return false;
+        this.errors.push("Please Enter a Valid Email or Id.");
       }
     },
     filteredLabels(labels) {
@@ -93,18 +91,12 @@ export default {
     },
     getTicks(value) {
       //Test User ID: 106662570
-      this.errors = [];
       loadProgressBar();
       const routes = [];
       const boulders = [];
       const ropes = [];
-      const userId = this.checkUser(value);
-      if (!userId) {
-        this.errors.push("Please Enter a Valid Email or Id.");
-        return;
-      }
       axios
-        .get(Constants.ROOT_URL + userId, { crossdomain: true })
+        .get(Constants.TICK_URL + value, { crossdomain: true })
         .then(res => {
           res.data.ticks.forEach(tick => {
             routes.push(tick.routeId);
@@ -159,10 +151,24 @@ export default {
           this.errors = [];
           this.errors.push("Could Not Find User.");
         });
+    },
+    getUser(value) {
+      const userId = this.checkUser(value);
+      if (!userId) {
+        return;
+      }
+      axios
+        .get(Constants.USER_URL + userId, { crossdomain: true })
+        .then(res => {
+          const { name, avatar } = res.data;
+          this.userInfo.name = name;
+          this.userInfo.avatar = avatar;
+        });
+      this.getTicks(userId);
     }
   },
   mounted() {
-    this.getTicks("mikemikaels@yahoo.com");
+    this.getTicks("email=mikemikaels@yahoo.com");
   }
 };
 </script>
@@ -194,7 +200,7 @@ body {
 }
 
 .user-icon {
-  max-width: 60px;
+  max-width: 50px;
   border-radius: 50%;
 }
 

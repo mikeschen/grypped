@@ -1,8 +1,8 @@
-const ROOT_URL =
-  "https://www.mountainproject.com/data/get-ticks?key=106635196-7386eb17c9b59aaa02314e6588deb35d&";
-const ROUTES_URL =
-  "https://www.mountainproject.com/data/get-routes?key=106635196-7386eb17c9b59aaa02314e6588deb35d";
-
+const ROOT_URL = "https://www.mountainproject.com/data/";
+const APIKEY = "key=106635196-7386eb17c9b59aaa02314e6588deb35d";
+const USER_URL = ROOT_URL + "get-user?" + APIKEY + "&";
+const TICK_URL = ROOT_URL + "get-ticks?" + APIKEY + "&";
+const ROUTES_URL = ROOT_URL + "get-routes?" + APIKEY;
 const GRADES = [
   "Easy",
   "5.0",
@@ -133,7 +133,8 @@ const GRADES = [
 ];
 
 export default {
-  ROOT_URL: ROOT_URL,
+  USER_URL: USER_URL,
+  TICK_URL: TICK_URL,
   ROUTES_URL: ROUTES_URL,
   GRADES: GRADES
 };

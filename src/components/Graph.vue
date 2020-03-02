@@ -1,47 +1,43 @@
 <template>
-  <b-row>
-    <b-col>
-      <div class="mt-2">
-        <strong
-          >Hardest Grade: {{ grades[converts[converts.length - 1]] }}</strong
-        >
-      </div>
-      <div role="tooltip" ref="tooltip" :class="{ 'is-active': tooltipData }">
-        <div class="tooltip-container" v-if="tooltipData">
-          <div>
-            <strong class="header"
-              >Grade:
-              {{ tooltipData && grades[converts[tooltipData.index]] }}</strong
-            >
+    <b-container>
+      <b-row>
+        <b-col>
+          <div class="mt-2">
+            <strong>Hardest Grade: {{ grades[converts[converts.length - 1]] }}</strong>
           </div>
-          <div>
-            <strong class="header">Ticks: {{ tooltipData.data[0] }}</strong>
+          <div role="tooltip" ref="tooltip" :class="{ 'is-active': tooltipData }">
+            <div class="tooltip-container" v-if="tooltipData">
+              <div>
+                <strong class="header">
+                  Grade:
+                  {{ tooltipData && grades[converts[tooltipData.index]] }}
+                </strong>
+              </div>
+              <div>
+                <strong class="header">Ticks: {{ tooltipData.data[0] }}</strong>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <svg
-        style="width:0; height:0; position:absolute;"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <defs>
-          <linearGradient id="grpFill" x1="1" x2="1" y1="0" y2="1">
-            <stop offset="0%" stop-color="#39af77" />
-            <stop offset="100%" stop-color="#ffffff" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <TrendChart
-        :datasets="quantitySets"
-        :labels="quantityLabels"
-        :min="0"
-        :interactive="true"
-        @mouseMove="onMouseMove"
-        class="tick-chart"
-        :grid="{ verticalLines: true, horizontalLines: true }"
-      />
-    </b-col>
-  </b-row>
+          <svg style="width:0; height:0; position:absolute;" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="grpFill" x1="1" x2="1" y1="0" y2="1">
+                <stop offset="0%" stop-color="#39af77" />
+                <stop offset="100%" stop-color="#ffffff" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <TrendChart
+            :datasets="quantitySets"
+            :labels="quantityLabels"
+            :min="0"
+            :interactive="true"
+            @mouseMove="onMouseMove"
+            class="tick-chart"
+            :grid="{ verticalLines: true, horizontalLines: true }"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
 </template>
 
 <script>
