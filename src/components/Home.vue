@@ -1,17 +1,17 @@
 <template>
   <div class="ticks">
-    <Search v-bind:errors="errors" @searchName="getUser" />
+    <Search :errors="errors" @searchName="getUser" />
     <b-container>
       <b-row>
         <b-col md="4">
           <md-radio v-model="isRoutes" :value="true">Routes</md-radio>
           <md-radio v-model="isRoutes" :value="false">Boulders</md-radio>
         </b-col>
-        <User v-bind:avatar="userInfo.avatar">{{ userInfo.name }}</User>
+        <User :avatar="userInfo.avatar">{{ userInfo.name }}</User>
       </b-row>
     </b-container>
     <Graph
-      v-bind:converts="isRoutes ? convertRopes : convertBoulders"
+      :converts="isRoutes ? convertRopes : convertBoulders"
       :quantityLabels="
             isRoutes ? quantityRopeLabels : quantityBoulderLabels
           "
