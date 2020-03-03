@@ -90,7 +90,7 @@ export default {
       return counts;
     },
     getTicks(value) {
-      //Test User ID: 106662570
+      //Test User ID: 108295877
       loadProgressBar();
       const routes = [];
       const boulders = [];
@@ -117,13 +117,15 @@ export default {
               }
             });
             const boulderCounts = this.buildGraph(boulders);
-            this.convertBoulders = Object.keys(boulderCounts);
+            this.convertBoulders =
+              boulders.length > 1 ? Object.keys(boulderCounts) : [0, 0];
             this.quantityBoulderLabels.xLabels = this.filteredLabels(
               this.convertBoulders
             );
             this.quantityBoulderSets = [
               {
-                data: Object.values(boulderCounts),
+                data:
+                  boulders.length > 1 ? Object.values(boulderCounts) : [0, 0],
                 smooth: true,
                 fill: true,
                 showPoints: true,
@@ -131,13 +133,14 @@ export default {
               }
             ];
             const ropeCounts = this.buildGraph(ropes);
-            this.convertRopes = Object.keys(ropeCounts);
+            this.convertRopes =
+              ropes.length > 1 ? Object.keys(ropeCounts) : [0, 0];
             this.quantityRopeLabels.xLabels = this.filteredLabels(
               this.convertRopes
             );
             this.quantityRopeSets = [
               {
-                data: Object.values(ropeCounts),
+                data: ropes.length > 1 ? Object.values(ropeCounts) : [0, 0],
                 smooth: true,
                 fill: true,
                 showPoints: true,
