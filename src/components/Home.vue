@@ -7,14 +7,19 @@
           <md-radio v-model="isRoutes" :value="true">Routes</md-radio>
           <md-radio v-model="isRoutes" :value="false">Boulders</md-radio>
         </b-col>
-        <User :avatar="userInfo.avatar">{{ userInfo.name }}</User>
+        <User
+          :avatar="
+            userInfo.avatar
+              ? userInfo.avatar
+              : 'https://www.mountainproject.com/photos/avatars/106635196.jpg?1522108024'
+          "
+          >{{ userInfo.name ? userInfo.name : "Joe Blow" }}</User
+        >
       </b-row>
     </b-container>
     <Graph
       :converts="isRoutes ? convertRopes : convertBoulders"
-      :quantityLabels="
-            isRoutes ? quantityRopeLabels : quantityBoulderLabels
-          "
+      :quantityLabels="isRoutes ? quantityRopeLabels : quantityBoulderLabels"
       :quantitySets="isRoutes ? quantityRopeSets : quantityBoulderSets"
     />
   </div>
@@ -23,6 +28,7 @@
 <script>
 import axios from "axios";
 import { loadProgressBar } from "axios-progress-bar";
+import { mapState } from "vuex";
 import Search from "./Search.vue";
 import User from "./User.vue";
 import Graph from "./Graph.vue";
@@ -47,11 +53,6 @@ export default {
         yLabelsTextFormatter: val => Math.round(val)
       },
       grades: Constants.GRADES,
-      userInfo: {
-        name: "Joe Smith",
-        avatar:
-          "https://www.mountainproject.com/photos/avatars/106635196.jpg?1522108024"
-      },
       quantityBoulderSets: [],
       quantityRopeSets: [],
       convertBoulders: [],
@@ -150,7 +151,7 @@ export default {
           });
         })
         .catch(err => {
-          console.log("Error: Could Not Complete Request");
+          console.log("Error: Could Not Complete Request", err);
           this.errors = [];
           this.errors.push("Could Not Find User.");
         });
@@ -160,19 +161,14 @@ export default {
       if (!userId) {
         return;
       }
-      axios
-        .get(Constants.USER_URL + userId, { crossdomain: true })
-        .then(res => {
-          const { name, avatar } = res.data;
-          this.userInfo.name = name;
-          this.userInfo.avatar = avatar;
-        });
+      this.$store.dispatch("loadUserInfo", userId);
       this.getTicks(userId);
     }
   },
   mounted() {
     this.getTicks("email=mikemikaels@yahoo.com");
-  }
+  },
+  computed: mapState(["userInfo"])
 };
 </script>
 
