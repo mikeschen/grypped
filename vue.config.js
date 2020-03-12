@@ -1,4 +1,4 @@
 module.exports = {
-  publicPath: "/grypped/",
+  // publicPath: "/grypped/",
   transpileDependencies: ["vuetify"]
 };
