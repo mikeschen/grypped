@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <Home />
-  </div>
+  </v-app>
 </template>
 
 <script>

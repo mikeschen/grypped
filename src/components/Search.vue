@@ -19,11 +19,15 @@
                     @keydown.enter="searchName(text)"
                   />
                 </md-field>
-                <div class="errors-red" v-if="errors.length">
+                <v-alert dense type="error" v-if="errors.length">
                   <p>{{ errors[0] }}</p>
-                </div>
+                </v-alert>
               </div>
-              <md-button class="md-accent md-raised btn-center" @click="searchName(text)">search</md-button>
+              <md-button
+                class="md-accent md-raised btn-center"
+                @click="searchName(text)"
+                >search</md-button
+              >
             </div>
           </div>
         </b-col>
